@@ -20,7 +20,7 @@ const Cart = () => {
       totalQuantities,
       cartItems,
       setShowCart,
-      toggleCartItemQuanitity,
+      toggleCartItemQuantity,
       onRemove
    } = useStateContext();
 
@@ -92,7 +92,7 @@ const Cart = () => {
                                     <span
                                        className="minus"
                                        onClick={() =>
-                                          toggleCartItemQuanitity(
+                                          toggleCartItemQuantity(
                                              item._id,
                                              "dec"
                                           )
@@ -106,7 +106,7 @@ const Cart = () => {
                                     <span
                                        className="plus"
                                        onClick={() =>
-                                          toggleCartItemQuanitity(
+                                          toggleCartItemQuantity(
                                              item._id,
                                              "inc"
                                           )
