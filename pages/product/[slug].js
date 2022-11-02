@@ -13,11 +13,17 @@ import {useStateContext} from "../../context/StateContext";
 const ProductDetails = ({product, products}) => {
    const {image, name, details, price} = product;
    const [index, setIndex] = useState(0);
-   const {decQty, incQty, qty, onAdd} = useStateContext();
+   const {decQty, incQty, qty, onAdd, setShowCart} = useStateContext();
+
+   const handleBuyNow = () => {
+      onAdd(product, qty);
+
+      setShowCart(true);
+   };
 
    return (
       <div>
-         <div className="product-details-container">
+         <div className="product-detail-container">
             <div>
                <div className="image-container">
                   <img
@@ -25,10 +31,10 @@ const ProductDetails = ({product, products}) => {
                      className="product-detail-image"
                   />
                </div>
-
                <div className="small-images-container">
                   {image?.map((item, i) => (
                      <img
+                        key={i}
                         src={urlFor(item)}
                         className={
                            i === index
@@ -57,20 +63,17 @@ const ProductDetails = ({product, products}) => {
                <p>{details}</p>
                <p className="price">${price}</p>
                <div className="quantity">
-                  <h3>Quantity: </h3>
-                  <p classname="quantity-desc">
+                  <h3>Quantity:</h3>
+                  <p className="quantity-desc">
                      <span className="minus" onClick={decQty}>
                         <AiOutlineMinus />
                      </span>
-                     <span className="num" onClick="">
-                        {qty}
-                     </span>
+                     <span className="num">{qty}</span>
                      <span className="plus" onClick={incQty}>
                         <AiOutlinePlus />
                      </span>
                   </p>
                </div>
-
                <div className="buttons">
                   <button
                      type="button"
@@ -79,7 +82,11 @@ const ProductDetails = ({product, products}) => {
                   >
                      Add to Cart
                   </button>
-                  <button type="button" className="buy-now" onClick="">
+                  <button
+                     type="button"
+                     className="buy-now"
+                     onClick={handleBuyNow}
+                  >
                      Buy Now
                   </button>
                </div>
@@ -101,7 +108,12 @@ const ProductDetails = ({product, products}) => {
 };
 
 export const getStaticPaths = async () => {
-   const query = `*[_type=="product"]{slug{current}}`;
+   const query = `*[_type == "product"] {
+    slug {
+      current
+    }
+  }
+  `;
 
    const products = await client.fetch(query);
 
@@ -110,17 +122,25 @@ export const getStaticPaths = async () => {
          slug: product.slug.current
       }
    }));
-   return {paths, fallback: "blocking"};
+
+   return {
+      paths,
+      fallback: "blocking"
+   };
 };
 
 export const getStaticProps = async ({params: {slug}}) => {
-   const query = `*[_type=="product" && slug.current=='${slug}'][0]`;
-   const productsQuery = '*[_type=="product"]';
+   const query = `*[_type == "product" && slug.current == '${slug}'][0]`;
+   const productsQuery = '*[_type == "product"]';
 
    const product = await client.fetch(query);
    const products = await client.fetch(productsQuery);
 
-   return {props: {product, products}};
+   console.log(product);
+
+   return {
+      props: {products, product}
+   };
 };
 
 export default ProductDetails;

@@ -36,13 +36,13 @@ const Cart = () => {
 
       const data = await response.json();
 
-      toast.loading("Redirecting");
+      toast.loading("Redirecting...");
 
       stripe.redirectToCheckout({sessionId: data.id});
    };
 
    return (
-      <div className="cart-wrapper">
+      <div className="cart-wrapper" ref={cartRef}>
          <div className="cart-container">
             <button
                type="button"
@@ -83,36 +83,44 @@ const Cart = () => {
                               <h5>{item.name}</h5>
                               <h4>${item.price}</h4>
                            </div>
-                           <div className="flex buttom">
-                              <p classname="quantity-desc">
-                                 <span
-                                    className="minus"
-                                    onClick={() =>
-                                       toggleCartItemQuantity(item._id, "dec")
-                                    }
-                                 >
-                                    <AiOutlineMinus />
-                                 </span>
-                                 <span className="num" onClick="">
-                                    {item.quantity}
-                                 </span>
-                                 <span
-                                    className="plus"
-                                    onClick={() =>
-                                       toggleCartItemQuantity(item._id, "inc")
-                                    }
-                                 >
-                                    <AiOutlinePlus />
-                                 </span>
-                              </p>
+                           <div className="flex bottom">
+                              <div>
+                                 <p className="quantity-desc">
+                                    <span
+                                       className="minus"
+                                       onClick={() =>
+                                          toggleCartItemQuanitity(
+                                             item._id,
+                                             "dec"
+                                          )
+                                       }
+                                    >
+                                       <AiOutlineMinus />
+                                    </span>
+                                    <span className="num" onClick="">
+                                       {item.quantity}
+                                    </span>
+                                    <span
+                                       className="plus"
+                                       onClick={() =>
+                                          toggleCartItemQuanitity(
+                                             item._id,
+                                             "inc"
+                                          )
+                                       }
+                                    >
+                                       <AiOutlinePlus />
+                                    </span>
+                                 </p>
+                              </div>
+                              <button
+                                 type="button"
+                                 className="remove-item"
+                                 onClick={() => onRemove(item)}
+                              >
+                                 <TiDeleteOutline />
+                              </button>
                            </div>
-                           <button
-                              type="button"
-                              className="remove-item"
-                              onClick={() => onRemove(item)}
-                           >
-                              <TiDeleteOutline />
-                           </button>
                         </div>
                      </div>
                   ))}
@@ -138,4 +146,5 @@ const Cart = () => {
       </div>
    );
 };
+
 export default Cart;
